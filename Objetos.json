@@ -1,0 +1,11 @@
+{
+    "id_object": 1,
+    "price": 3,
+    "name": "objeto1",
+    "description": "este objeto es bueno",
+    "stock": 100,
+    "main": "activities.js",
+    "scripts": {
+      "start": "objects.js"
+    }
+}    

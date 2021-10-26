@@ -1,0 +1,22 @@
+{
+    "id_user": 1,
+    "name": "Salim",
+    "correo": "ahouchsalim@gmail.com",
+    "contraseña": "*********",
+    "main": "users.js",
+    "scripts": {
+      "start": "nodemon users.js"
+    },
+    "historial_puntos": {
+      "ganancia": {
+        "id_actividad": "",
+        "cantidad_puntos": "",
+        "fecha_obtencion": ""
+      },
+      "gastos": {
+        "id_compra": "",
+        "cantidad_puntos": "",
+        "fecha_obtencion": ""
+      }
+    }
+}    
