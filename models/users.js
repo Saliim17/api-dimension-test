@@ -9,13 +9,29 @@ const userSchema = new Schema({
   },
   correo: {
     type: String,
-    required: [true, 'Email es necasario'],
+    required: [true, 'Email is necessary'],
     unique: true,
   },
-  contraseña: {
-    type: String,
-    required: [true, 'Contraseña es necesario'],
+  historial_ganancias: {
+    cantidad_puntos: {
+      type: Number,
+      default: 0,
+    },
+    fecha_obtencion: {
+      type: Number,
+      default: 0,
+    },
   },
+  historial_gastos: {
+    cantidad_puntos: {
+      type: Number,
+      default: 0,
+    },
+    fecha_obtencion: {
+      type: Number,
+      default: 0,
+    },
+  }
 });
 
 module.exports = mongoose.model('users', userSchema);

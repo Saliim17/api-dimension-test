@@ -12,20 +12,6 @@ const activitySchema = new Schema({
     type: String,
     required: [true, 'Name missing for activity'],
   },
-  descripcion: {
-    type: String,
-    required: [true, 'Se necesita una descripcion'],
-    unique: true,
-  },
-  organizacion: {
-    type: String,
-    required: [true, 'Se necesita una organizacion'],
-  },
-  imagen: {
-    type: String,
-    required: [true, 'Se necesita una imagen'],
-  }
-
 });
 
 module.exports = mongoose.model('activities', activitySchema);
