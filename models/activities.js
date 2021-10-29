@@ -5,21 +5,27 @@ const { Schema } = mongoose;
 const activitySchema = new Schema({
   id: {
     type: Number,
-    unique: [true, 'Activity id already exists'],
+    unique: true,
     required: [true, 'ID missing for activity'],
   },
   name: {
     type: String,
     required: [true, 'Name missing for activity'],
   },
-  assignActivities: {
-    type: Array,
-    default: [],
+  descripcion: {
+    type: String,
+    required: [true, 'Se necesita una descripcion'],
+    unique: true,
   },
-  debt: {
-    type: Number,
-    default: 0,
+  organizacion: {
+    type: String,
+    required: [true, 'Se necesita una organizacion'],
   },
+  imagen: {
+    type: String,
+    required: [true, 'Se necesita una imagen'],
+  }
+
 });
 
 module.exports = mongoose.model('activities', activitySchema);

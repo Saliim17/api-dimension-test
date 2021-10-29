@@ -5,22 +5,29 @@ const { Schema } = mongoose;
 const objectSchema = new Schema({
   id: {
     type: Number,
-    unique: [true, 'Object id already exists'],
-    required: [true, 'ID missing for object'],
+    unique: true,
+    required: [true, 'ID es obligatorio'],
   },
   name: {
     type: String,
     required: [true, 'Name missing for object'],
+    unique: true,
   },
-  assignObjects: {
-    type: Array,
-    default: [],
+  descripcion: {
+    type: String,
   },
-  debt: {
+  precio: {
+    type: Number,
+    default: 0.0,
+    required: [true, 'Falta precio de producto'],
+  },
+  imagen: {
+    type: String,
+  },
+  stock: {
     type: Number,
     default: 0,
   },
 });
 
 module.exports = mongoose.model('object', objectSchema);
-

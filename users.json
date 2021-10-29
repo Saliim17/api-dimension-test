@@ -1,8 +1,8 @@
 {
     "id_user": 1,
-    "name": "Salim",
-    "correo": "ahouchsalim@gmail.com",
-    "contraseña": "*********",
+    "name": " ",
+    "correo": " ",
+    "contraseña": " ",
     "main": "users.js",
     "scripts": {
       "start": "nodemon users.js"

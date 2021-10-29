@@ -3,22 +3,18 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
-  id: {
-    type: Number,
-    unique: [true, 'user id already exists'],
-    required: [true, 'ID missing for user'],
-  },
   name: {
     type: String,
     required: [true, 'Name missing for user'],
   },
-  assignUsers: {
-    type: Array,
-    default: [],
+  correo: {
+    type: String,
+    required: [true, 'Email es necasario'],
+    unique: true,
   },
-  debt: {
-    type: Number,
-    default: 0,
+  contraseña: {
+    type: String,
+    required: [true, 'Contraseña es necesario'],
   },
 });
 
