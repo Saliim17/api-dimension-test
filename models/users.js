@@ -5,29 +5,33 @@ const { Schema } = mongoose;
 const ganancias = new Schema({
   id_actividad: {
     type: Number,
-    unique: true
   },
   moneda: {
     type:String,
     required: true,
     default: "Corepuntos"
   },
-  cantidad_puntos: Number,
-  fecha_obtencion: Date
+  puntos: Number,
+  fecha_obtencion: {
+    type:Date,
+    default: Date.now
+  }
 })
 
 const gastos = new Schema({
   id_objeto: {
     type: Number,
-    unique: true
   },
   moneda: {
     type:String,
     required: true,
     default: "Corepuntos"
   },
-  cantidad_puntos: Number,
-  fecha_obtencion: Date
+  puntos: Number,
+  fecha_obtencion: {
+    type:Date,
+    default: Date.now
+  }
 })
 
 const userSchema = new Schema({
