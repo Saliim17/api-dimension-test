@@ -8,10 +8,10 @@ function getUsers(req, res) { // GET all users
   });
 }
 
-function getUserById(req, res) { // GET user by Id
+function getUserByEmail(req, res) { // GET user by EMAIL
   const { userId } = req.params;
-
-  User.findById(userId, (err, user) => {
+  console.log(userId);
+  User.find({correo:userId}, (err, user) => {
     if (err) return res.status(404).send({ message: `Error ${err}. No users found` });
 
     return res.status(200).send(user);
@@ -29,7 +29,7 @@ function createUser(req, res) { // POST user
 function deleteUser(req, res) { // DELETE user
   const { userId } = req.params;
 
-  User.findByIdAndRemove(userId, (err, user) => {
+  User.findOneAndDelete({correo:userId}, (err, user) => {
     if (err) return res.status(500).send({ err });
     if (!user) return res.status(404).send({ message: 'User not found!' });
 
@@ -40,7 +40,8 @@ function deleteUser(req, res) { // DELETE user
 function updateUser(req, res) { // PATCH user
   const { userId } = req.params;
 
-  User.findByIdAndUpdate(userId, req.body, { new: true }, (err, user) => {
+  User.findOneAndUpdate({correo:userId}, req.body, (err, user) => {
+    if (!user) return res.status(404).send({message: 'User not found'});
     if (err) return res.status(500).send({ err });
 
     return res.status(200).send({ message: `User ${user} updated` });
@@ -49,7 +50,7 @@ function updateUser(req, res) { // PATCH user
 
 module.exports = {
   getUsers,
-  getUserById,
+  getUserByEmail,
   createUser,
   deleteUser,
   updateUser,
