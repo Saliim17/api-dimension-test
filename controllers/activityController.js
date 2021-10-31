@@ -9,9 +9,9 @@ function getActivities(req, res) { // GET all activities
   }
   
 function getActivitiesById(req, res) { // GET activities by Id
-  const { activityId } = req.params;
+  const  {activityId} = req.params;
 
-  Activity.findById(activityId, (err, activity) => {
+  Activity.findOne({id:activityId}, (err, activity) => {
     if (err) return res.status(404).send({ message: `Error ${err}. No activity found` });
     return res.status(200).send(activity);
   });
@@ -26,14 +26,21 @@ function createActivity(req, res) { // POST activity
 }
 
 function deleteActivity(req, res) { // DELETE Activity
-  const { activityId } = req.params;
+  const  { activityId }  = req.params;
+  Activity.findOneAndDelete({id: activityId}, (err, act) => {
+    if (err) return res.status(500).send({ err });
+    if (!act) return res.status(404).send({ message: 'Activity not found!' });
+
+    return res.status(200).send({ message: `Activity ${act} deleted successfully!` });
+  });
 }
 
 function updateActivity(req, res) { // PATCH Activity
 const { activityId } = req.params;
 
-Activity.findByIdAndUpdate(activityId, req.body, { new: true }, (err, activity) => {
+Activity.findOneAndUpdate({id:activityId}, req.body, { new: true }, (err, activity) => {
   if (err) return res.status(500).send({ err });
+  if (!activity) return res.status(404).send({message: 'No activities found with that id.'});
 
   return res.status(200).send({ message: `Activity ${activity} updated` });
 });

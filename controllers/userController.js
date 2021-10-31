@@ -10,10 +10,9 @@ function getUsers(req, res) { // GET all users
 
 function getUserByEmail(req, res) { // GET user by EMAIL
   const { userId } = req.params;
-  console.log(userId);
-  User.find({correo:userId}, (err, user) => {
-    if (err) return res.status(404).send({ message: `Error ${err}. No users found` });
-
+  User.findOne({correo:userId}, (err, user) => {
+    if (err) return res.status(500).send({ message: `Error ${err}.` });
+    if (!user) return res.status(404).send({ Error: `Error. No users found` });
     return res.status(200).send(user);
   });
 }
