@@ -60,7 +60,7 @@ Funcionalidades implementadas:
 - [x] Borrado de objetos.
 ## Servicios
 ### Usuarios
-- [] getBalance(userId) = devuelve el saldo del usuario pasado por parámetro suando su ID.
+- [ ] getBalance(userId) = devuelve el saldo del usuario pasado por parámetro suando su ID.
 ### Objetos
 - [X] checkItemStock(itemId) = devuelve el stock del objeto pasado por parámetro usando su ID.
 ### 
