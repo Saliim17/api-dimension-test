@@ -1,5 +1,5 @@
 # API DIMENSION 2022
-Esta api será utilizada por la asociación Core Dumped y probablemente por las demás participantes de Dimension 2022. La api permite registro e identificación de usuarios, que tendrán asociados puntos por participar en eventos. Con dichos puntos podrán comprar objetos. Esta api se encarga de registrar todos los datos.
+Esta API será utilizada por la asociación Core Dumped y probablemente por las demás participantes de Dimension 2022. La API permite el registro e identificación de usuarios, que tendrán asociados puntos por participar en eventos. Con dichos puntos podrán comprar objetos. Esta api se encarga de registrar todos los datos.
 
 El proyecto está construido con MongoDB y NodeJS.
 ## Modelo de datos
@@ -9,26 +9,27 @@ De momento, los usuarios de la API son sencillos. Tienen los siguientes campos:
 - correo: También es único. Actúa como id.
 - historial_ganancias: Es un array que tiene los siguientes elementos:
   - id_actividad: id de la actividad en la que se ha conseguido la ganancia de puntos.
-  - moneda: Moneda. Puede haber varias - corepuntos, puntos de dimension... Predeterminado "Corepuntos"
+  - moneda: Moneda. Puede haber varias - corepuntos, puntos de dimension... Predeterminado "Corepuntos" (*)
   - puntos: Indica cuanto se ha ganado.
   - fecha_obtencion: Registra cuando se ha creado la ganancia. Automático.
 -  historial_gastos: Es un array que contiene los siguientes elementos:
   - id_objeto: id del objeto que se ha comprado.
-  - moneda. Predeterminado "Corepuntos"
+  - moneda. Predeterminado "Corepuntos" (*)
   - puntos
   - fecha_obetencion. Automático.
 ### Actividades
-- id
+- id. Es único e inmutable.
 - name
 - descripcion. Opcional.
 - imagen. Opcional - url a una imagen alojada en otro servidor.
-- moneda. Predeterminado "Corepuntos".
+- moneda. Predeterminado "Corepuntos". (*)
 - puntosPorDefecto. Predeterminados 20.
 ### Objetos
 - id
 - name
 - descripcion. Opcional
 - precio
+- Tipo de moneda (*)
 - imagen. Opcional
 - stock - ¿Cuántos quedan?
 ## Rutas
@@ -57,3 +58,11 @@ Funcionalidades implementadas:
 - [x] Creación de objetos.
 - [x] Actualización de objetos.
 - [x] Borrado de objetos.
+## Servicios
+### Usuarios
+- [ ] getBalance(userId) = devuelve el saldo del usuario pasado por parámetro suando su ID.
+### Objetos
+- [X] checkItemStock(itemId) = devuelve el stock del objeto pasado por parámetro usando su ID.
+### 
+## Anotaciones
+(*) = A la espera de confirmación para crear varios tipos de moneda.
