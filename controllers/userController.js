@@ -1,5 +1,6 @@
 const User = require('../models/users.js');
-const Activity = require('../models/activities.js');
+const Activity = require('../models/activities.js').default;
+const Item = require('../models/items.js');
 
 function getUsers(req, res) { // GET all users
   User.find({}, (err, users) => {
@@ -11,7 +12,7 @@ function getUsers(req, res) { // GET all users
 
 function getUserByEmail(req, res) { // GET user by EMAIL
   const { userId } = req.params;
-  User.findOne({correo:userId}, (err, user) => {
+  User.findOne({email:userId}, (err, user) => {
     if (err) return res.status(500).send({ message: `Error ${err}.` });
     if (!user) return res.status(404).send({ Error: `Error. No users found` });
     return res.status(200).send(user);
@@ -29,7 +30,7 @@ function createUser(req, res) { // POST user
 function deleteUser(req, res) { // DELETE user
   const { userId } = req.params;
 
-  User.findOneAndDelete({correo:userId}, (err, user) => {
+  User.findOneAndDelete({email:userId}, (err, user) => {
     if (err) return res.status(500).send({ err });
     if (!user) return res.status(404).send({ message: 'User not found!' });
 
@@ -40,7 +41,7 @@ function deleteUser(req, res) { // DELETE user
 function updateUser(req, res) { // PATCH user
   const { userId } = req.params;
 
-  User.findOneAndUpdate({correo:userId}, req.body, (err, user) => {
+  User.findOneAndUpdate({email:userId}, req.body, (err, user) => {
     if (!user) return res.status(404).send({message: 'User not found'});
     if (err) return res.status(500).send({ err });
 
@@ -48,7 +49,7 @@ function updateUser(req, res) { // PATCH user
   });
 }
 
-function participarEnEvento(req, res) { // POST larguisimo pero weno jajaja
+function participateInEvent(req, res) { // POST larguisimo pero weno jajaja
   const { userId } = req.params;
 
   // Si hay campo activity en el body,
@@ -59,28 +60,28 @@ function participarEnEvento(req, res) { // POST larguisimo pero weno jajaja
       if (!act) return res.status(404).send(`Activity with id ${req.body.activity} not found. Please, create it first.`);
       
       //La actividad existe; añadir la moneda correspondiente al usuario.
-      var puntos = act.puntosPorDefecto;
-      if (req.body.puntos !== undefined)
-        puntos = req.body.puntos;
-      // Hay que comprobar si el usuario ya ha participadfo en una actividad con esa id antes de añadirlo al array.
+      var points = act.defaultPoints;
+      if (req.body.points !== undefined)
+        points = req.body.points;
+      // Hay que comprobar si el usuario ya ha participado en una actividad con esa id antes de añadirlo al array.
       
-      User.findOne({correo:userId}, (err, user) => {
+      User.findOne({email:userId}, (err, user) => {
         if (err) return res.status(500).send({ message: `Error ${err}.` });
         if (!user) return res.status(404).send({ Error: `Error. User with email ${userId} not found.` });
 
-        for (var key in user.historial_ganancias){
-          if (user.historial_ganancias[key].id_actividad == req.body.activity){
+        for (var key in user.earnings_history){
+          if (user.earnings_history[key].id_activity == req.body.activity){
             return res.status(403).send({message: 'Error. User already participated in that activity'})
           }
         }
         // Actualizamos al usuario añadiendole al array de ganancias la nueva actividad.
-        User.findOneAndUpdate({correo:userId}, 
+        User.findOneAndUpdate({email:userId}, 
           { $push:
-            { historial_ganancias:
+            { earnings_history:
               {
-                id_actividad:req.body.activity,
-                moneda:act.moneda,
-                puntos:puntos
+                id_activity:req.body.activity,
+                coin:act.coin,
+                points:points
               }
             }
           }, (err, user) => {
@@ -101,30 +102,55 @@ function participarEnEvento(req, res) { // POST larguisimo pero weno jajaja
 } 
 
 function getCurrency(req, res) { // Devuelve la cantidad de monedas del tipo X del usuario Y
-  var userId = req.params.userId;
-  var currency = req.params.currency;
+  const { userId } = req.params;
+  let { currency } = req.params;
   console.log(userId + " " + currency);
 
-  User.findOne({correo: userId}, (err, user) => {
+  User.findOne({email: userId}, (err, user) => {
     if (err) return res.status(500).send({ message: `Error ${err}.` });
     if (!user) return res.status(404).send({ Error: `Error. User with email ${userId} not found.` });
-    var saldo = 0;
+    var balance = 0;
     // SUMAR GANANCIAS
-    for (var i in user.historial_ganancias){
-      var ganancia = user.historial_ganancias[i];
-      if (ganancia.moneda === currency) {
-        saldo += ganancia.puntos;
+    for (let i in user.earnings_history){
+      let earnings = user.earnings_history[i];
+      if (earnings.coin === currency) {
+        balance += earnings.coin;
       }
     }
     // RESTAR PERDIDAS
-    for (var i in user.historial_gastos){
-      var gasto = user.historial_gastos[i];
-      if (gasto.moneda === currency) {
-        saldo -= gasto.puntos;
+    for (let i in user.expenses_history){
+      let expenses = user.expenses_history[i];
+      if (expenses.coin === currency) {
+        balance -= expenses.coin;
       }
     }
 
-    return res.status(200).send({saldo: saldo});
+    return res.status(200).send({balance: balance});  //balance: 20
+  });
+}
+
+
+function buyItem(req, res) { 
+  /*
+  1. Comprobar si el usuario existe.
+  2. Comprobar el tipo de moneda del objeto
+  3. Comprobar si el usuario tiene monedas de ese tipo
+  4. Comprobar si su saldo es mayor que el coste del objeto
+  5. Actualizar saldo
+  6. Actualizar stock
+  */
+
+  const { userId } = req.params;
+  const { itemId } = req.params;
+  let { stock } = req.params;
+
+  User.findOne({email: userId}, (err, user) => {
+    if (err) return res.status(500).send({ message: `Error ${err}.` });
+    if (!user) return res.status(404).send({ Error: `Error. User with email ${userId} not found.` });
+    stock = Item.checkItemStock(itemId);
+    if (stock == 0) 
+      return res.status(404).send({ Error: `Error. Item with ID ${itemId} has not an available stock.` });
+    
   });
 }
 
@@ -134,6 +160,6 @@ module.exports = {
   createUser,
   deleteUser,
   updateUser,
-  participarEnEvento,
+  participateInEvent,
   getCurrency
 };

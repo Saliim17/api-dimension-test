@@ -2,33 +2,36 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
-const ganancias = new Schema({
-  id_actividad: {
+const earnings = new Schema({
+  id_activity: {
+    inmutable: true,
     type: Number,
   },
-  moneda: {
+  coin: {
     type:String,
     required: true,
     default: "Corepuntos"
   },
-  puntos: Number,
-  fecha_obtencion: {
+  points: Number,
+  dateObtaining: {
     type:Date,
     default: Date.now
   }
 })
 
-const gastos = new Schema({
-  id_objeto: {
+const expenses = new Schema({
+  id_item: {
     type: Number,
+    inmutable: true,
+
   },
-  moneda: {
+  coin: {
     type:String,
     required: true,
     default: "Corepuntos"
   },
-  puntos: Number,
-  fecha_obtencion: {
+  points: Number,
+  dateObtaining: {
     type:Date,
     default: Date.now
   }
@@ -40,16 +43,20 @@ const userSchema = new Schema({
     required: [true, 'Name missing for user'],
     unique: true
   },
-  correo: {
+  email: {
     type: String,
     required: [true, 'Email is necessary'],
     unique: true,
   },
-  historial_ganancias: [ganancias],
-  historial_gastos: [gastos]
+  earnings_history: [earnings],
+  expenses_history: [expenses],
+  balance: {
+    type: Number,
+    default: 0,
+  }
 });
 
 
 
-module.exports = mongoose.model('users', userSchema);
+module.exports = mongoose.model('User', userSchema);
 

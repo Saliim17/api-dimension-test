@@ -8,7 +8,7 @@ router.post('/', userController.createUser);
 router.put('/:userId', userController.updateUser);
 router.delete('/:userId', userController.deleteUser);
 
-router.post('/participacion/:userId', userController.participarEnEvento);
+router.post('/participation/:userId', userController.participateInEvent);
 router.get('/currency/:currency/:userId', userController.getCurrency)
 
 module.exports = router;

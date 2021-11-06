@@ -1,4 +1,4 @@
-const Activity = require('../models/activities.js');
+const Activity = require('../models/activities').default;
 
 function getActivities(req, res) { // GET all activities
     Activity.find({}, (err, activities) => {
@@ -11,9 +11,9 @@ function getActivities(req, res) { // GET all activities
 function getActivitiesById(req, res) { // GET activities by Id
   const  {activityId} = req.params;
 
-  Activity.findOne({id:activityId}, (err, activity) => {
+  Activity.findOne({id:activityId}, (err, act) => {
     if (err) return res.status(404).send({ message: `Error ${err}. No activity found` });
-    return res.status(200).send(activity);
+    return res.status(200).send(act);
   });
 }
 
@@ -35,7 +35,7 @@ function deleteActivity(req, res) { // DELETE Activity
   });
 }
 
-function updateActivity(req, res) { // PATCH Activity
+function updateActivity(req, res) { // PUT Activity
 const { activityId } = req.params;
 
 Activity.findOneAndUpdate({id:activityId}, req.body, { new: true }, (err, activity) => {
