@@ -10,8 +10,8 @@ function checkItemStock(itemId) {
       //El objeto existe, devolvemos su stock.
       return itm.stock;
     });
-  }
-
-function getBalance (userId) {
-    
 }
+
+module.exports = {
+  checkItemStock
+};

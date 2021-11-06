@@ -1,5 +1,9 @@
 const User = require('../models/users.js');
 
+function getBalance (userId) {
+    
+}
+
 function buyItem(req, res) { 
     /*
     1. Comprobar si el usuario existe.
