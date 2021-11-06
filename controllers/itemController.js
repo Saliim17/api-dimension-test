@@ -30,7 +30,7 @@ function deleteItem(req, res) { // DELETE item
     if (err) return res.status(500).send({ err });
     if (!itm) return res.status(404).send({ message: 'Item not found!' });
 
-    return res.status(200).send({ message: `Item ${itm} deleted successfully!` });
+    return res.status(200).send({ message: `Item deleted successfully!`, item:itm});
   });
 }
 

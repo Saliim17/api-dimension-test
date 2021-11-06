@@ -52,8 +52,8 @@ Funcionalidades implementadas:
 - [x] Actualización de actividades (PUT /api/activities/:ID). El body de la petición incluye los cambios de la actividad con el id que se ha introducido por parámetro.
 - [x] Borrado de actividades (DELETE /api/activities/:ID)
 ### Objetos
-- [ ] Get de objeto.
-- [ ] Get de objeto concreto.
-- [ ] Creación de objetos.
-- [ ] Actualización de objetos.
-- [ ] Borrado de objetos.
+- [x] Get de objeto.
+- [x] Get de objeto concreto.
+- [x] Creación de objetos.
+- [x] Actualización de objetos.
+- [x] Borrado de objetos.
