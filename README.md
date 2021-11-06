@@ -58,5 +58,11 @@ Funcionalidades implementadas:
 - [x] Creación de objetos.
 - [x] Actualización de objetos.
 - [x] Borrado de objetos.
+## Servicios
+### Usuarios
+- [] getBalance(userId) = devuelve el saldo del usuario pasado por parámetro suando su ID.
+### Objetos
+- [X] checkItemStock(itemId) = devuelve el stock del objeto pasado por parámetro usando su ID.
+### 
 ### Anotaciones
 (*) = A la espera de confirmación para crear varios tipos de moneda.
