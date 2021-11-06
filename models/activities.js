@@ -27,7 +27,7 @@ const activitySchema = new Schema({
   defaultPoints: {
     type: Number,
     required: true,
-    default: 0
+    default: 20
   }
 });
 
