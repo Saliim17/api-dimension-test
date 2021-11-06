@@ -64,5 +64,5 @@ Funcionalidades implementadas:
 ### Objetos
 - [X] checkItemStock(itemId) = devuelve el stock del objeto pasado por parámetro usando su ID.
 ### 
-### Anotaciones
+## Anotaciones
 (*) = A la espera de confirmación para crear varios tipos de moneda.
