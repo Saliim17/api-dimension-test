@@ -1,5 +1,5 @@
 const User = require('../models/users.js');
-const Activity = require('../models/activities.js').default;
+const Activity = require('../models/activities.js');
 const Item = require('../models/items.js');
 
 function getUsers(req, res) { // GET all users
@@ -101,6 +101,96 @@ function participateInEvent(req, res) { // POST larguisimo pero weno jajaja
   else return res.status(400).send({message: 'Bad request. Please, include the field "activity"'})
 } 
 
+function purchaseItem(req, res) {
+  const { email } = req.params;
+  const { itemId } = req.params;
+
+  User.findOne({email:email}, (err, user) => {
+    if (err) return res.status(500).send({ message: `Error ${err}.` });
+    if (!user) return res.status(404).send({ Error: `Error. User with email ${email} not found.` });
+
+    // Usuario encontrado; ahora hay que comprobar que objeto intenta comprar y con qué moneda se compra dicho objeto.
+
+    Item.findOne({id:itemId}, (err, item) => {
+      if (err) return res.status(500).send({ message: `Error ${err}.` });
+      if (!item) return res.status(404).send({ Error: `Error. Item with id ${itemId} not found.` });
+
+      var balance = getCurrencyAux(user, item.coinType);
+
+      if (balance >= item.price) {
+        // El usuario puedep permitirselo; hay que hacer la compra siempre y cuando el usuario no haya comprado ese objeto ya.
+        if (!item.canBeBoughtMultipleTimes){
+          // El objeto solo puede comprarse una vez por usuario; hay que asegurarse de que no se haya comprado ya.
+          var found = false;
+          for (let i in user.expenses_history) {
+            var expense = user.expenses_history[i];
+            if (expense.id_item === item.id) {
+              found = true;
+              break;
+            }
+          }
+          if (found)
+            return res.status(401).send({ message: `User with email ${email} already bought item ${item.name}, and this item can only be bought once.`});
+        }
+
+        // Comprobación del stock del objeto.
+
+        if (item.stock <= 0)
+          return res.status(401).send({ message: `All existences of item ${item.name} have already been sold!`});
+
+        // O bien el usuario no ha comprado el objeto o el objeto se puede comprar varias veces. En cualquier caso, hacer la compra.
+        
+        Item.findOneAndUpdate({id: itemId}, { $inc: { stock: -1 } },(err, itm) => {
+          if (err) return res.status(500).send({ message: `Error ${err}.` });
+          if (!itm) return res.status(404).send({ Error: `Error. Item with id ${itemId} not found.` });
+
+          User.findOneAndUpdate({email: email}, 
+            { $push:
+              { expenses_history:
+                {
+                  id_item: itemId,
+                  coin: item.coinType,
+                  points: item.price
+                }
+              }
+            },
+            (err, usr) => {
+              if (err) return res.status(500).send({ message: `Error ${err}.` });
+              if (!usr) return res.status(404).send({ Error: `Error. User with email ${email} not found.` });
+
+              return res.status(200).send({message: "Purchase registered correctly."});
+            });
+        });
+
+      } else 
+        return res.status(401).send({ message: `User with email ${email} does not have enough ${item.coinType} to buy ${item.name}`});
+    })
+  })
+}
+
+function getCurrencyAux(user, currency){
+  if (user != undefined) {
+    var balance = 0;
+    // SUMAR GANANCIAS
+    for (let i in user.earnings_history){
+      let earnings = user.earnings_history[i];
+      if (earnings.coin === currency) {
+        balance += earnings.points;
+      }
+    }
+    // RESTAR PERDIDAS
+    for (let i in user.expenses_history){
+      let expenses = user.expenses_history[i];
+      if (expenses.coin === currency) {
+        balance -= expenses.points;
+      }
+    }
+    return balance;
+  } 
+
+  return 0;
+}
+
 function getCurrency(req, res) { // Devuelve la cantidad de monedas del tipo X del usuario Y
   const { userId } = req.params;
   let { currency } = req.params;
@@ -109,21 +199,8 @@ function getCurrency(req, res) { // Devuelve la cantidad de monedas del tipo X d
   User.findOne({email: userId}, (err, user) => {
     if (err) return res.status(500).send({ message: `Error ${err}.` });
     if (!user) return res.status(404).send({ Error: `Error. User with email ${userId} not found.` });
-    var balance = 0;
-    // SUMAR GANANCIAS
-    for (let i in user.earnings_history){
-      let earnings = user.earnings_history[i];
-      if (earnings.coin === currency) {
-        balance += earnings.coin;
-      }
-    }
-    // RESTAR PERDIDAS
-    for (let i in user.expenses_history){
-      let expenses = user.expenses_history[i];
-      if (expenses.coin === currency) {
-        balance -= expenses.coin;
-      }
-    }
+
+    var balance = getCurrencyAux(user, currency);
 
     return res.status(200).send({balance: balance});  //balance: 20
   });
@@ -136,5 +213,6 @@ module.exports = {
   deleteUser,
   updateUser,
   participateInEvent,
-  getCurrency
+  getCurrency,
+  purchaseItem
 };

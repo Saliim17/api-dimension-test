@@ -9,6 +9,7 @@ router.put('/:userId', userController.updateUser);
 router.delete('/:userId', userController.deleteUser);
 
 router.post('/participation/:userId', userController.participateInEvent);
+router.post('/buy/:itemId/:email', userController.purchaseItem);
 router.get('/currency/:currency/:userId', userController.getCurrency)
 
 module.exports = router;
