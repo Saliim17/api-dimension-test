@@ -1,4 +1,4 @@
-const Activity = require('../models/activities').default;
+const Activity = require('../models/activities.js');
 
 function getActivities(req, res) { // GET all activities
     Activity.find({}, (err, activities) => {

@@ -32,6 +32,10 @@ const itemSchema = new Schema({
     type: Number,
     default: 0,
   },
+  canBeBoughtMultipleTimes: {
+    type: Boolean,
+    default: false
+  }
 });
 
 module.exports = mongoose.model('Item', itemSchema);
