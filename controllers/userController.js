@@ -1,6 +1,9 @@
 const User = require('../models/users.js');
 const Activity = require('../models/activities.js').default;
 const Item = require('../models/items.js');
+const passport = require('passport');
+const bcrypt = require('bcrypt');
+const token = require('../middleware/auth');
 
 function getUsers(req, res) { // GET all users
   User.find({}, (err, users) => {
@@ -19,11 +22,43 @@ function getUserByEmail(req, res) { // GET user by EMAIL
   });
 }
 
-function createUser(req, res) { // POST user
-  const newUser = new User(req.body);
-  newUser.save((err, newUserData) => {
-    if (err) return res.status(400).send({ message: `Error ${err}. User creation failed!` });
-    return res.status(200).send(newUserData);
+const createUser = async (req, res) => { // POST user
+  const { name, email, password, confirm_password } = req.body
+  
+  if (!name || !email || !password || !confirm_password) {
+    return res.status(403).send({ message: `Missing credentials` });
+  }
+  if (password != confirm_password) {
+    return res.status(401).send({ message: `Password do not match` });
+  }
+  if (password.length < 4) {
+    return res.status(411).send({ message: `Passwords must be at least 4 characters.` });
+  }
+  // Look for email coincidence
+  let emailConfirm = await User.findOne({ email });
+  if (emailConfirm) 
+    return res.status(401).send({ message: `The email is already in use.`});
+  else {
+    // Saving a New User
+    const newUser = new User({ name, email, password });
+    newUser.password = await newUser.encryptPassword(password);
+    await newUser.save();
+    return res.status(200).send({ message: `You are registered.`});
+  }
+}
+
+function logUser (req, res) { //POST user
+  let { email, password } = req.body
+  // Find the user
+  User.findOne({ email }, (err, user) => {
+    if (err) return res.status(500).send({ err });
+    if (!user) return res.status(404).send({ message: 'No user found' });
+    // User exists, check if password is correct
+    bcrypt.compare(password, user.password, (error, isMatch) => {
+      if (error) return res.status(500).send({ error });
+      if (!isMatch) return res.status(401).send({ message: 'Incorrect password' });
+      return res.status(200).send({ message: 'Correct password', token: token.createToken(email) });
+    });
   });
 }
 
@@ -34,7 +69,7 @@ function deleteUser(req, res) { // DELETE user
     if (err) return res.status(500).send({ err });
     if (!user) return res.status(404).send({ message: 'User not found!' });
 
-    return res.status(200).send({ message: `User ${user} deleted successfully!` });
+    return res.status(200).send({ message: `User deleted successfully!` }); 
   });
 }
 
@@ -136,5 +171,6 @@ module.exports = {
   deleteUser,
   updateUser,
   participateInEvent,
-  getCurrency
+  getCurrency,
+  logUser,
 };
