@@ -19,18 +19,15 @@
   },
   "homepage": "https://github.com/Saliim17/api-dimension-test#readme",
   "dependencies": {
-<<<<<<< HEAD
     "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
     "dotenv": "^10.0.0",
     "dotenv-types": "^1.0.0",
-=======
-    "dotenv": "^10.0.0",
->>>>>>> c0816b5601cf471a73989d9accc152d50b8d836c
     "express": "^4.17.1",
     "express-session": "^1.17.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.12",
+    "nodemon": "^2.0.15",
     "passport": "^0.5.0",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^6.1.0"
