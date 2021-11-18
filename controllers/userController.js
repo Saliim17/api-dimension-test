@@ -249,9 +249,6 @@ module.exports = {
   updateUser,
   participateInEvent,
   getCurrency,
-<<<<<<< HEAD
   logUser,
-=======
-  purchaseItem
->>>>>>> c0816b5601cf471a73989d9accc152d50b8d836c
+  purchaseItem,
 };
