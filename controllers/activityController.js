@@ -36,14 +36,14 @@ function deleteActivity(req, res) { // DELETE Activity
 }
 
 function updateActivity(req, res) { // PUT Activity
-const { activityId } = req.params;
+  const { activityId } = req.params;
 
-Activity.findOneAndUpdate({id:activityId}, req.body, { new: true }, (err, activity) => {
-  if (err) return res.status(500).send({ err });
-  if (!activity) return res.status(404).send({message: 'No activities found with that id.'});
+  Activity.findOneAndUpdate({id:activityId}, req.body, { new: true }, (err, activity) => {
+    if (err) return res.status(500).send({ err });
+    if (!activity) return res.status(404).send({message: 'No activities found with that id.'});
 
-  return res.status(200).send({ message: `Activity ${activity} updated` });
-});
+    return res.status(200).send({ message: `Activity ${activity} updated` });
+  });
 }
 
 module.exports = {
