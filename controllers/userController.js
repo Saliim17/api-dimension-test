@@ -1,8 +1,7 @@
 const User = require('../models/users.js');
 const Activity = require('../models/activities.js');
 const Item = require('../models/items.js');
-const passport = require('passport');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const token = require('../middleware/auth');
 
 function getUsers(req, res) { // GET all users
@@ -41,25 +40,19 @@ const createUser = async (req, res) => { // POST user
   else {
     // Saving a New User
     const newUser = new User({ name, email, password });
-    newUser.password = await newUser.encryptPassword(password);
     await newUser.save();
-    return res.status(200).send({ message: `You are registered.`});
+    return res.status(200).send({ message: `You are registered.`, token: token.createToken(newUser.email)});
   }
 }
 
-function logUser (req, res) { //POST user
-  let { email, password } = req.body
-  // Find the user
-  User.findOne({ email }, (err, user) => {
-    if (err) return res.status(500).send({ err });
-    if (!user) return res.status(404).send({ message: 'No user found' });
-    // User exists, check if password is correct
-    bcrypt.compare(password, user.password, (error, isMatch) => {
-      if (error) return res.status(500).send({ error });
-      if (!isMatch) return res.status(401).send({ message: 'Incorrect password' });
-      return res.status(200).send({ message: 'Correct password', token: token.createToken(email) });
-    });
-  });
+const logUser = async (req, res) => {
+	const { email, password } = req.body
+  const user = await User.findOne({ email }, "+password")
+
+	if (user && (await user.matchPassword(password))) 
+		return res.status(200).json({message: 'You are successfully logged.',  token: token.createToken(user.email)});
+  else 
+		return res.status(401).json({message: 'Wrong email or password.'});
 }
 
 function deleteUser(req, res) { // DELETE user
@@ -251,4 +244,5 @@ module.exports = {
   getCurrency,
   logUser,
   purchaseItem,
+  //login
 };
