@@ -8,11 +8,11 @@ router.post('/', userController.createUser);
 router.put('/:userId', userController.updateUser);
 router.delete('/:userId', userController.deleteUser);
 router.post('/login', userController.logUser);
-router.post('/participation/:userId', userController.participateInEvent);
+router.post('/participation/:userId', auth.verifyTokenAndEmail, userController.participateInEvent);
 router.get('/currency/:currency/:userId', userController.getCurrency);
-router.post('/buy/:itemId/:email', userController.purchaseItem);
+router.post('/buy/:itemId/:email', auth.verifyTokenAndEmail, userController.purchaseItem);
 
-router.get('/private', auth.verifyToken, (req, res) => {
+router.get('/private/:userId', auth.verifyTokenAndEmail, (req, res) => {
     res.status(200).send("token correcto maquina");
 })
 module.exports = router;
