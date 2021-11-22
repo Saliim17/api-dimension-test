@@ -33,8 +33,11 @@ const createUser = async (req, res) => { // POST user
 
   // Saving a New User
   const newUser = new User({ name, email, password });
-  await newUser.save();
-  return res.status(200).send({ message: `You are registered.`, token: token.createToken(newUser.email)});
+  newUser.save((err, user) => {
+    if (err) return res.status(500).send(err);
+    return res.status(200).send({ message: `You are registered.`, token: token.createToken(newUser.email)});
+  })
+
 }
 
 const logUser = async (req, res) => {
