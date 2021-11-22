@@ -22,27 +22,19 @@ function getUserByEmail(req, res) { // GET user by EMAIL
 }
 
 const createUser = async (req, res) => { // POST user
-  const { name, email, password, confirm_password } = req.body
+  const { name, email, password } = req.body
   
-  if (!name || !email || !password || !confirm_password) {
+  if (!name || !email || !password ) {
     return res.status(403).send({ message: `Missing credentials` });
-  }
-  if (password != confirm_password) {
-    return res.status(401).send({ message: `Password do not match` });
   }
   if (password.length < 4) {
     return res.status(411).send({ message: `Passwords must be at least 4 characters.` });
   }
-  // Look for email coincidence
-  let emailConfirm = await User.findOne({ email });
-  if (emailConfirm) 
-    return res.status(401).send({ message: `The email is already in use.`});
-  else {
-    // Saving a New User
-    const newUser = new User({ name, email, password });
-    await newUser.save();
-    return res.status(200).send({ message: `You are registered.`, token: token.createToken(newUser.email)});
-  }
+
+  // Saving a New User
+  const newUser = new User({ name, email, password });
+  await newUser.save();
+  return res.status(200).send({ message: `You are registered.`, token: token.createToken(newUser.email)});
 }
 
 const logUser = async (req, res) => {
