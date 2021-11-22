@@ -236,5 +236,4 @@ module.exports = {
   getCurrency,
   logUser,
   purchaseItem,
-  //login
 };
