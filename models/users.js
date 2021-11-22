@@ -64,6 +64,10 @@ const userSchema = new Schema({
     type: Date, 
     default: Date.now() 
   },
+  isAdmin: { 
+    type: Boolean, 
+    default: false
+  },
   earnings_history: [earnings],
   expenses_history: [expenses],
   balance: {
