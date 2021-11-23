@@ -39,10 +39,9 @@ function verifyTokenAndEmail(req, res, next) {
       next();
     else {
       // check if user is admin
-      User.find({email: decoded.data}, (err, user) => {
+      User.findOne({email: decoded.data}, (err, user) => {
         if (err) return res.status(500).send(err);
         if (!user) return res.status(404).send(`No user with email ${decoded.data} found!`);
-
         if (user.isAdmin === true) next();
         else return res.status(403).send("Invalid user");
       });

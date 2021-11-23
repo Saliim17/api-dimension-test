@@ -22,17 +22,14 @@ function getUserByEmail(req, res) { // GET user by EMAIL
 }
 
 const createUser = async (req, res) => { // POST user
-  const { name, email, password } = req.body
-  
-  if (!name || !email || !password ) {
-    return res.status(403).send({ message: `Missing credentials` });
-  }
+  const { name, email, password, isAdmin } = req.body
+
   if (password.length < 4) {
     return res.status(411).send({ message: `Passwords must be at least 4 characters.` });
   }
 
   // Saving a New User
-  const newUser = new User({ name, email, password });
+  const newUser = new User({ name, email, password, isAdmin });
   newUser.save((err, user) => {
     if (err) return res.status(500).send(err);
     return res.status(200).send({ message: `You are registered.`, token: token.createToken(newUser.email)});
